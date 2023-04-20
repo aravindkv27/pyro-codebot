@@ -1,0 +1,122 @@
+# Write a program to add two numbers and display the result.
+
+const num1 = 10;
+const num2 = 5;
+const sum = num1 + num2;
+console.log(`The sum of ${num1} and ${num2} is ${sum}.`);
+
+
+# Write a program to subtract two numbers and display the result.
+
+const num1 = 10;
+const num2 = 5;
+const diff = num1 - num2;
+console.log(`The difference between ${num1} and ${num2} is ${diff}.`);
+
+
+# Write a program to calculate the circumference of a circle with given radius and display the result.
+
+const radius = 5;
+const circumference = 2 * Math.PI * radius;
+console.log(`The circumference of a circle with radius ${radius} is ${circumference}.`);
+
+
+# Write a program to convert distance from kilometers to miles and display the result.
+
+const kilometers = 10;
+const miles = kilometers / 1.609;
+console.log(`${kilometers} kilometers is equal to ${miles.toFixed})
+
+
+# Write a function to calculate the area of a rectangle
+
+function calculateArea(length, width) {
+  return length * width;
+}
+console.log(calculateArea(5, 2)); // Output: 10
+
+
+# Write A function to find the minimum of two numbers
+
+function findMin(num1, num2) {
+  if (num1 < num2) {
+    return num1;
+  } else {
+    return num2;
+  }
+}
+console.log(findMin(3, 5)); // Output: 3
+
+
+# Write a function to check if a string is a palindrome
+
+function isPalindrome(str) {
+  const reversedStr = str.split('').reverse().join('');
+  if (str === reversedStr) {
+    return true;
+  } else {
+    return false;
+  }
+}
+console.log(isPalindrome('racecar')); // Output: true
+
+
+# Write a function to check if a number is odd.
+
+function isOdd(num) {
+  if (num % 2 !== 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+console.log(isOdd(5)); // Output: true
+
+
+# A function to calculate the circumference of a circle.
+
+function calculateCircleCircumference(radius) {
+  return 2 * Math.PI * radius;
+}
+console.log(calculateCircleCircumference(5)); // Output: 31.41592653589793
+
+
+# Write A function to calculate the perimeter of a rectangle.
+
+function calculatePerimeter(length, width) {
+  return 2 * (length + width);
+}
+console.log(calculatePerimeter(5, 2)); // Output: 14
+
+
+# Write A function to reverse a string.
+
+function reverseString(str) {
+  return str.split('').reverse().join('');
+}
+
+
+# Write A function to calculate the factorial of a number.
+
+function factorial(num) {
+  let result = 1;
+  for (let i = 1; i <= num; i++) {
+    result *= i;
+  }
+  return result;
+}
+
+
+# Write a function to check if a number is prime.
+
+function isPrime(num) {
+  if (num <= 1) {
+    return false;
+  }
+  for (let i = 2; i < num; i++) {
+    if (num % i === 0) {
+      return false;
+    }
+  }
+  return true;
+}
