@@ -1,3 +1,4 @@
 torchtext
-pandas
 spacy
+pandas
+matplotlib

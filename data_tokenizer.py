@@ -4,13 +4,8 @@ import torch.optim as optim
 
 from torchtext import *
 from torchtext import data
-# from torchtext.data import BucketIterator
-# from torchtext.legacy.data import Field, BucketIterator, Iterator
-# from torchtext.legacy import data
-
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-
 import spacy
 import numpy as np
 import pandas as pd
@@ -26,8 +21,6 @@ import math
 import torch.nn as nn
 import torch.nn.functional as F
 from tqdm import tqdm
-
-
 
 # Question starts with '#'
 
@@ -55,17 +48,6 @@ if dp['question']:
   dps.append(dp)
 
 def tokenize_python(python_code_str):
-    
-
-    # py_tokens = list(tokenize(io.BytesIO(python_code_str.encode('utf-8')).readline))
-
-    # tokenized_op = []
-
-    # for i in range(0, len(py_tokens)):
-
-    #     tokenized_op.append((py_tokens[i].type, py_tokens[i].string))
-    
-    # return tokenized_op
 
     tokens = list(tokenize(io.BytesIO(python_code_str.encode('utf-8')).readline))
 
@@ -75,38 +57,6 @@ def tokenize_python(python_code_str):
 
 
 def augment_tokenize_pycode(python_code_str, mask_factor=0.3):
-   
-    # var_dict = {}
-
-    # skip_list = ['range', 'enumerate', 'print', 'ord', 'int', 'float', 'zip'
-    #              'char', 'list', 'dict', 'tuple', 'set', 'len', 'sum', 'min', 'max']
-    # skip_list.extend(keyword.kwlist)
-
-    # var_counter = 1
-    # python_tokens = list(tokenize(io.BytesIO(python_code_str.encode('utf-8')).readline))
-
-    # tokenized_op = []
-
-    # for i in range(0, len(python_tokens)):
-    #   if python_tokens[i].type == 1 and python_tokens[i].string not in skip_list:
-        
-    #     if i>0 and python_tokens[i-1].string in ['def', '.', 'import', 'raise', 'except', 'class']: # avoid masking modules, functions and error literals
-    #       skip_list.append(python_tokens[i].string)
-    #       tokenized_op.append((python_tokens[i].type, python_tokens[i].string))
-    #     elif python_tokens[i].string in var_dict:  # if variable is already masked
-    #       tokenized_op.append((python_tokens[i].type, var_dict[python_tokens[i].string]))
-    #     elif random.uniform(0, 1) > 1-mask_factor: # randomly mask variables
-    #       var_dict[python_tokens[i].string] = 'var_' + str(var_counter)
-    #       var_counter+=1
-    #       tokenized_op.append((python_tokens[i].type, var_dict[python_tokens[i].string]))
-    #     else:
-    #       skip_list.append(python_tokens[i].string)
-    #       tokenized_op.append((python_tokens[i].type, python_tokens[i].string))
-      
-    #   else:
-    #     tokenized_op.append((python_tokens[i].type, python_tokens[i].string))
-    
-    # return tokenized_op
 
     var_dict = {}
     skip_list = ['range', 'enumerate', 'print', 'ord', 'int', 'float', 'zip', 'char', 'list', 'dict', 'tuple', 'set', 'len', 'sum', 'min', 'max']
@@ -118,18 +68,23 @@ def augment_tokenize_pycode(python_code_str, mask_factor=0.3):
     
     for i in range(0, len(python_tokens)):
         if python_tokens[i].type == 1 and python_tokens[i].string not in skip_list:
+            
             if i > 0 and python_tokens[i-1].string in ['def', '.', 'import', 'raise', 'except', 'class']:
                 skip_list.append(python_tokens[i].string)
                 tokenized_op.append((python_tokens[i].type, python_tokens[i].string))
+
             elif python_tokens[i].string in var_dict:
                 tokenized_op.append((python_tokens[i].type, var_dict[python_tokens[i].string]))
+
             elif random.uniform(0, 1) > 1 - mask_factor:
                 var_dict[python_tokens[i].string] = 'var_' + str(var_counter)
                 var_counter += 1
                 tokenized_op.append((python_tokens[i].type, var_dict[python_tokens[i].string]))
+
             else:
                 skip_list.append(python_tokens[i].string)
                 tokenized_op.append((python_tokens[i].type, python_tokens[i].string))
+
         else:
             tokenized_op.append((python_tokens[i].type, python_tokens[i].string))
     
