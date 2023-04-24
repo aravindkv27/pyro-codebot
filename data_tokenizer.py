@@ -4,9 +4,7 @@ import torch.optim as optim
 
 from torchtext import *
 from torchtext import data
-import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
-import spacy
+
 import numpy as np
 import pandas as pd
 
@@ -21,6 +19,7 @@ import math
 import torch.nn as nn
 import torch.nn.functional as F
 from tqdm import tqdm
+from torchtext.data import BucketIterator
 
 # Question starts with '#'
 
@@ -31,21 +30,23 @@ f = open("data.txt", encoding='utf-8')
 file_lines = f.readlines()
 
 
-dps = []
-dp = {"question": None, "solution": []}
 
+dps = []
+dp = None
 for line in file_lines:
-  if line.startswith("#"):
-    dp['solution'] = ''.join(dp['solution'])
-    if dp['question']:
+  if line[0] == "#":
+    if dp:
+      dp['solution'] = ''.join(dp['solution'])
       dps.append(dp)
-    dp = {"question": line[1:], "solution": []}
+    dp = {"question": None, "solution": []}
+    dp['question'] = line[1:]
   else:
     dp["solution"].append(line)
 
-dp['solution'] = ''.join(dp['solution'])
-if dp['question']:
-  dps.append(dp)
+def run_on_gpu():
+    global device
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print("Using device:", device)
 
 def tokenize_python(python_code_str):
 
@@ -102,3 +103,4 @@ def train_validation():
   val_df = python_problems_df[~split_data]
 
   return train_df, val_df
+

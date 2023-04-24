@@ -1,6 +1,24 @@
-from main import *
+import torch
+import math
+import torch.nn as nn
+import torch.nn.functional as F
+import os
+# import vocabulary
+import gc
+torch.cuda.empty_cache()
+print("cache cleared")
+gc.collect()
 
 
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = 'max_split_size_mb:7000'
+
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device('cpu')
+
+print("Using device:", device)
+
+TRG_PAD_IDX = 1
 class CrossEntropyLoss(nn.CrossEntropyLoss):
     """CrossEntropyLoss - with ability to recieve distrbution as targets, and optional label smoothing"""
 
@@ -102,6 +120,5 @@ def maskNLLLoss(inp, target, mask):
     crossEntropy = CrossEntropyLoss(ignore_index = TRG_PAD_IDX, smooth_eps=0.20)
     loss = crossEntropy(inp, target)
     loss = loss.to(device)
-    return loss, nTotal.item()
-
+    return loss, nTotal.item()  
 

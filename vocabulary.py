@@ -1,9 +1,10 @@
 from data_tokenizer import *
 from encoder import *
-from decoder import *
-from training_model import training_model
+
+# from training_model import training_model
 
 train_df, val_df = train_validation()
+
 
 
 def voc_py():
@@ -48,8 +49,10 @@ def voc_py():
     
     train_data = data.Dataset(train_example, fields)
     valid_data =  data.Dataset(val_example, fields)
+    Input.build_vocab(train_data, min_freq = 0)
+    Output.build_vocab(train_data, min_freq = 0)
 
-    return fields, train_data, valid_data, Input, Output
+    return fields, Input, Output
 
 def training():
 
@@ -85,7 +88,34 @@ def training():
     print(len(Output.vocab.__dict__['freqs']))
 
     SRC_PAD_IDX = Input.vocab.stoi[Input.pad_token]
+    global TRG_PAD_IDX
     TRG_PAD_IDX = Output.vocab.stoi[Output.pad_token]
     global model
     model = Seq2Seq(enc, dec, SRC_PAD_IDX, TRG_PAD_IDX, device).to(device)
+
     return TRG_PAD_IDX, model
+
+def count_parameters(model):
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+
+def initialize_weights(m):
+    # print(f'The model has {count_parameters(model):,} trainable parameters')
+    if hasattr(m, 'weight') and m.weight.dim() > 1:
+        nn.init.xavier_uniform_(m.weight.data)
+
+def test_model():
+
+    model.apply(initialize_weights)
+    LEARNING_RATE = 0.0005
+
+    optimizer = torch.optim.Adam(model.parameters(), lr = LEARNING_RATE)
+    return optimizer
+
+def final_values():
+   
+   input1 = Input
+   output1 = Output
+   model1 = model
+
+   return input1, output1, model1
