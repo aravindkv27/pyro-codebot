@@ -85,7 +85,7 @@ def training():
                 DEC_DROPOUT, 
                 device)
     
-    print(len(Output.vocab.__dict__['freqs']))
+    # print(len(Output.vocab.__dict__['freqs']))
 
     SRC_PAD_IDX = Input.vocab.stoi[Input.pad_token]
     global TRG_PAD_IDX
@@ -98,9 +98,8 @@ def training():
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
-
 def initialize_weights(m):
-    # print(f'The model has {count_parameters(model):,} trainable parameters')
+
     if hasattr(m, 'weight') and m.weight.dim() > 1:
         nn.init.xavier_uniform_(m.weight.data)
 

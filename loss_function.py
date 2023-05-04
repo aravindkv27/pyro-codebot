@@ -10,7 +10,7 @@ print("cache cleared")
 gc.collect()
 
 
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = 'max_split_size_mb:7000'
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = 'max_split_size_mb:900'
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -115,7 +115,7 @@ def _is_long(x):
     return isinstance(x, torch.LongTensor) or isinstance(x, torch.cuda.LongTensor)
 
 def maskNLLLoss(inp, target, mask):
-    # print(inp.shape, target.shape, mask.sum())
+    
     nTotal = mask.sum()
     crossEntropy = CrossEntropyLoss(ignore_index = TRG_PAD_IDX, smooth_eps=0.20)
     loss = crossEntropy(inp, target)

@@ -2,3 +2,7 @@ torchtext
 spacy
 pandas
 matplotlib
+numpy 
+pandas
+tqdm
+tokenizer

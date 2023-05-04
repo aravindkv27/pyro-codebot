@@ -21,10 +21,6 @@ import torch.nn.functional as F
 from tqdm import tqdm
 from torchtext.data import BucketIterator
 
-# Question starts with '#'
-
-## Using a custom tokenizer to tokenize python code
-
 
 f = open("data.txt", encoding='utf-8')
 file_lines = f.readlines()

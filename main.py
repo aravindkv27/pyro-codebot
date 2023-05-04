@@ -5,45 +5,27 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import spacy
 
-
 train_df, val_df = train_validation()
 fields, Input, Output = voc_py()
 
-
-print(train_df.shape)
-print(val_df.shape)
-
-print(Output.vocab)
-
-
 TRG_PAD_IDX, model = training()
-print(TRG_PAD_IDX)
+
 
 optimizer = test_model()
 
 criterion = maskNLLLoss
 print("success")
 
-
-
 def make_trg_mask(trg):
-        
-        #trg = [batch size, trg len]
-        
+                
         trg_pad_mask = (trg != TRG_PAD_IDX).unsqueeze(1).unsqueeze(2)
-        
-        #trg_pad_mask = [batch size, 1, 1, trg len]
-        
+                
         trg_len = trg.shape[1]
         
         trg_sub_mask = torch.tril(torch.ones((trg_len, trg_len), device = device)).bool()
-        
-        #trg_sub_mask = [trg len, trg len]
-            
+                    
         trg_mask = trg_pad_mask & trg_sub_mask
-        
-        #trg_mask = [batch size, 1, trg len, trg len]
-        
+                
         return trg_mask
 
 def train(model, iterator, optimizer, criterion, clip):
@@ -61,17 +43,11 @@ def train(model, iterator, optimizer, criterion, clip):
         optimizer.zero_grad()
         
         output, _ = model(src, trg[:,:-1])
-                
-        #output = [batch size, trg len - 1, output dim]
-        #trg = [batch size, trg len]
             
         output_dim = output.shape[-1]
             
         output = output.contiguous().view(-1, output_dim)
         trg = trg[:,1:].contiguous().view(-1)
-                
-        #output = [batch size * trg len - 1, output dim]
-        #trg = [batch size * trg len - 1]
             
         mask_loss, nTotal = criterion(output, trg, trg_mask)
         
@@ -83,9 +59,7 @@ def train(model, iterator, optimizer, criterion, clip):
         
         print_losses.append(mask_loss.item() * nTotal)
         n_totals += nTotal
-
-
-        
+       
     return sum(print_losses) / n_totals
 
 
@@ -105,23 +79,16 @@ def evaluate(model, iterator, criterion):
             trg_mask = make_trg_mask(trg)
 
             output, _ = model(src, trg[:,:-1])
-            
-            #output = [batch size, trg len - 1, output dim]
-            #trg = [batch size, trg len]
-            
+
             output_dim = output.shape[-1]
             
             output = output.contiguous().view(-1, output_dim)
             trg = trg[:,1:].contiguous().view(-1)
-            
-            #output = [batch size * trg len - 1, output dim]
-            #trg = [batch size * trg len - 1]
-            
+
             mask_loss, nTotal = criterion(output, trg, trg_mask)
 
             print_losses.append(mask_loss.item() * nTotal)
             n_totals += nTotal
-
         
     return sum(print_losses) / n_totals
 
@@ -131,8 +98,6 @@ def epoch_time(start_time, end_time):
     elapsed_mins = int(elapsed_time / 60)
     elapsed_secs = int(elapsed_time - (elapsed_mins * 60))
     return elapsed_mins, elapsed_secs
-
-
 
 
 N_EPOCHS = 50
@@ -171,16 +136,17 @@ for epoch in range(N_EPOCHS):
     
     if valid_loss < best_valid_loss:
         best_valid_loss = valid_loss
-        torch.save(model.state_dict(), 'D:\College\Sem-8\codebot1\model12345.pt')
+        torch.save(model.state_dict(), 'D:\College\Sem-8\codebot\model12345.pt')
     
     print(f'Epoch: {epoch+1:02} | Time: {epoch_mins}m {epoch_secs}s')
     print(f'\tTrain Loss: {train_loss:.3f} | Train PPL: {math.exp(train_loss):7.3f}')
     print(f'\t Val. Loss: {valid_loss:.3f} |  Val. PPL: {math.exp(valid_loss):7.3f}')
 
+# Loading the trained model
 SRC = Input
 TRG = Output
 
-model.load_state_dict(torch.load('D:\College\Sem-8\codebot1\model12345.pt'))
+model.load_state_dict(torch.load('D:\College\Sem-8\codebot\model12345.pt'))
 
 print(model)
 
@@ -251,24 +217,23 @@ def display_attention(sentence, translation, attention, n_heads = 8, n_rows = 4,
 
     plt.show()
 
-# src = "write a function that adds two numbers"
-# src=src.split(" ")
-# translation, attention = translate_sentence(src, SRC, TRG, model, device)
+# Converting english sentence to python code
+def eng_to_python(Source):
+  Source=Source.split(" ")
+  translation, attention = translate_sentence(Source, SRC, TRG, model, device)
 
-# print(f'predicted trg sequence: ')    
-# print(translation)
-# print("code: \n", untokenize(translation[:-1]).decode('utf-8'))
+  print(f'Python Code: \n')
+#   print()
+  py_code = untokenize(translation[:-1]).decode('utf-8')
+#   return py_code
+  print(py_code)
+  print("----------------------------------------------------------")
+  return py_code
 
-# print(display_attention(src, translation, attention))
+# def input_function(engSent):
 
-def eng_to_python(src):
-  src=src.split(" ")
-  translation, attention = translate_sentence(src, SRC, TRG, model, device)
+for i in range(1,1000):
+    Source = input("Enter the question: ")
 
-  print(f'predicted trg: \n')
-  # print(translation)
-  print(untokenize(translation[:-1]).decode('utf-8'))
-
-src = "program to sort a list of dictionaries by key"
-
-eng_to_python(src)
+    py_code = eng_to_python(Source)
+    # print(py_code)
