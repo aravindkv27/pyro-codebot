@@ -10,7 +10,7 @@ print("cache cleared")
 gc.collect()
 
 
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = 'max_split_size_mb:900'
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = 'max_split_size_mb:850'
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
