@@ -6,6 +6,9 @@ from encoder import *
 train_df, val_df = train_validation()
 
 
+# Firstly, the seed value of 1234 is set for the random number generator using random.seed(SEED) 
+# and PyTorch's manual seed is also set to this value using torch.manual_seed(SEED). 
+# The torch.cuda.manual_seed(SEED) sets the seed value for CUDA devices if available.
 
 def voc_py():
 
@@ -16,11 +19,14 @@ def voc_py():
     torch.cuda.manual_seed(SEED)
     torch.backends.cudnn.deterministic = True
     global Input, Output
+
+    #  the Input field is defined to preprocess the input data.
     Input = data.Field(tokenize = 'spacy',
                 init_token='<sos>', 
                 eos_token='<eos>', 
                 lower=True)
 
+    # The Output field is defined to preprocess the output data
     Output = data.Field(tokenize = augment_tokenize_pycode,
                         init_token='<sos>', 
                         eos_token='<eos>', 
@@ -31,8 +37,10 @@ def voc_py():
     train_example = []
     val_example = []
 
-    train_expansion_factor = 100
-    for j in range(train_expansion_factor):
+    # Data preparation step for ML model. The input and Output data are loaded
+    # prepared for training and validation.
+    tef = 100
+    for j in range(tef):
         for i in range(train_df.shape[0]):
             try:
                 ex = data.Example.fromlist([train_df.question[i], train_df.solution[i]], fields)

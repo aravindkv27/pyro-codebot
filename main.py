@@ -28,6 +28,7 @@ def make_trg_mask(trg):
                 
         return trg_mask
 
+# Training seq2seq model using a masked cross-entropy loss.
 def train(model, iterator, optimizer, criterion, clip):
     
     model.train()
@@ -62,7 +63,7 @@ def train(model, iterator, optimizer, criterion, clip):
        
     return sum(print_losses) / n_totals
 
-
+# Evaluates the performance of the model on the validation set.
 def evaluate(model, iterator, criterion):
     
     model.eval()
@@ -192,31 +193,7 @@ def translate_sentence(sentence, src_field, trg_field, model, device, max_len = 
     trg_tokens = [trg_field.vocab.itos[i] for i in trg_indexes]
     
     return trg_tokens[1:], attention
-
-def display_attention(sentence, translation, attention, n_heads = 8, n_rows = 4, n_cols = 2):
     
-    assert n_rows * n_cols == n_heads
-    
-    fig = plt.figure(figsize=(30,50))
-    
-    for i in range(n_heads):
-        
-        ax = fig.add_subplot(n_rows, n_cols, i+1)
-        
-        _attention = attention.squeeze(0)[i].cpu().detach().numpy()
-
-        cax = ax.matshow(_attention, cmap='bone')
-
-        ax.tick_params(labelsize=12)
-        ax.set_xticklabels(['']+['<sos>']+[t.lower() for t in sentence]+['<eos>'], 
-                           rotation=45)
-        ax.set_yticklabels(['']+translation)
-
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
-        ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
-
-    plt.show()
-
 # Converting english sentence to python code
 def eng_to_python(Source):
   Source=Source.split(" ")

@@ -26,7 +26,7 @@ f = open("data.txt", encoding='utf-8')
 file_lines = f.readlines()
 
 
-
+# Split qusetion and answer 
 dps = []
 dp = None
 for line in file_lines:
@@ -44,6 +44,7 @@ def run_on_gpu():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device:", device)
 
+# Custome Tokenizzer using tokenzie
 def tokenize_python(python_code_str):
 
     tokens = list(tokenize(io.BytesIO(python_code_str.encode('utf-8')).readline))
@@ -52,7 +53,7 @@ def tokenize_python(python_code_str):
     
     return tokenized_op
 
-
+# Data Augumentation to increase the size of the data set into 3.
 def augment_tokenize_pycode(python_code_str, mask_factor=0.3):
 
     var_dict = {}
@@ -87,7 +88,7 @@ def augment_tokenize_pycode(python_code_str, mask_factor=0.3):
     
     return tokenized_op
 
-
+#Spliting the data 80 and 20 for train and validation
 def train_validation():
 
   python_problems_df = pd.DataFrame(dps)
